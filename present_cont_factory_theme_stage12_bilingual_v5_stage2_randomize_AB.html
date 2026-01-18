@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Present Continuous – Factory Missions</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --panel:rgba(255,255,255,.08);
+    --stroke:rgba(170,220,255,.18);
+    --stroke2:rgba(170,220,255,.28);
+    --txt:#eaf5ff;
+    --muted:rgba(234,245,255,.78);
+    --good:#78ffb7;
+    --bad:#ff5a7a;
+    --warn:#ffd45a;
+    --hot:#ff2d8a;
+    --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--txt);
+    background:
+      radial-gradient(circle at 18% 14%, rgba(80,210,255,.18), transparent 55%),
+      radial-gradient(circle at 80% 22%, rgba(255,45,138,.14), transparent 55%),
+      radial-gradient(circle at 60% 80%, rgba(120,255,183,.10), transparent 55%),
+      var(--bg);
+    overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* subtle floating dust */
+  .dust:before,.dust:after{
+    content:""; position:fixed; inset:-40px; pointer-events:none; opacity:.45;
+    background-image:
+      radial-gradient(2px 2px at 12% 20%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.85), transparent 60%),
+      radial-gradient(2px 2px at 55% 30%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(1px 1px at 70% 58%, rgba(255,255,255,.85), transparent 60%),
+      radial-gradient(2px 2px at 85% 22%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(1px 1px at 92% 72%, rgba(255,255,255,.85), transparent 60%);
+    background-size: 560px 560px;
+    animation: drift 22s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,.12));
+  }
+  .dust:after{opacity:.25; background-size: 920px 920px; animation-duration: 34s}
+  @keyframes drift{to{transform:translate3d(-70px, 50px, 0)}}
+
+  .screen{
+    position:fixed; inset:0;
+    display:none;
+    padding:16px;
+    padding-top:max(16px, env(safe-area-inset-top));
+    padding-bottom:max(16px, env(safe-area-inset-bottom));
+    overflow:auto; overscroll-behavior:contain;
+  }
+  .screen.show{display:flex}
+  .wrap{width:min(1080px,100%); margin:auto; display:grid; gap:14px}
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    padding:12px 14px;
+    border:1px solid var(--stroke);
+    border-radius:20px;
+    background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+    box-shadow:0 18px 70px var(--shadow);
+    backdrop-filter: blur(12px);
+  }
+  .brand{display:flex; gap:10px; align-items:center}
+  .badge{
+    width:44px; height:44px; border-radius:14px;
+    display:grid; place-items:center; font-weight:1000;
+    border:1px solid var(--stroke2);
+    background:linear-gradient(135deg, rgba(80,210,255,.22), rgba(255,45,138,.16));
+    box-shadow:0 14px 36px rgba(0,0,0,.55);
+  }
+  .title{font-weight:1000; letter-spacing:.2px}
+  .subtitle{opacity:.85; font-size:13px; margin-top:2px}
+
+  .pill{
+    padding:9px 12px;
+    border-radius:999px;
+    border:1px solid var(--stroke);
+    background:rgba(255,255,255,.06);
+    font-weight:950;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .btn{
+    border:1px solid var(--stroke2);
+    background:rgba(255,255,255,.08);
+    color:var(--txt);
+    border-radius:14px;
+    padding:12px 14px;
+    font-weight:1000;
+    cursor:pointer;
+    transition: transform .12s ease, background .2s ease;
+    user-select:none;
+  }
+  .btn:hover{background:rgba(255,255,255,.12)}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{
+    border-color: rgba(255,212,90,.65);
+    background: linear-gradient(135deg, rgba(255,212,90,.30), rgba(255,45,138,.18));
+    box-shadow: 0 18px 48px rgba(0,0,0,.55), 0 0 0 1px rgba(255,212,90,.18) inset;
+  }
+  .btn.primary.pulse{animation:pulseGlow 1.8s ease-in-out infinite}
+  @keyframes pulseGlow{
+    50%{transform: translateY(-1px) scale(1.02); box-shadow: 0 22px 60px rgba(0,0,0,.6), 0 0 26px rgba(255,212,90,.22);}
+  }
+  .btn.danger{border-color: rgba(255,90,122,.45)}
+
+  .card{
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+    border-radius:22px;
+    box-shadow:0 24px 80px var(--shadow);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+  }
+  .card .head{padding:16px 16px 0}
+  .card .body{padding:16px}
+  .big{
+    font-size: clamp(24px, 3.2vw, 40px);
+    font-weight:1000;
+    line-height:1.12;
+    margin:0;
+  }
+  .hint{opacity:.86; line-height:1.45}
+  .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:14px}
+  @media (max-width: 920px){.grid2{grid-template-columns:1fr}}
+
+  /* Arena */
+  .factory{
+    position:relative;
+    border-radius:24px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.08), transparent);
+    overflow:hidden;
+    min-height: 520px;
+    box-shadow:0 24px 80px var(--shadow);
+  }
+  .factory:before,.factory:after{
+    content:""; position:absolute; inset:-40px; pointer-events:none; opacity:.5;
+    background-image:
+      radial-gradient(2px 2px at 8% 22%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(1px 1px at 22% 66%, rgba(255,255,255,.8), transparent 60%),
+      radial-gradient(2px 2px at 38% 28%, rgba(255,255,255,.85), transparent 60%),
+      radial-gradient(1px 1px at 52% 78%, rgba(255,255,255,.8), transparent 60%),
+      radial-gradient(2px 2px at 66% 44%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(1px 1px at 82% 18%, rgba(255,255,255,.8), transparent 60%);
+    background-size: 520px 520px;
+    animation: twinkle 7s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,.14));
+  }
+  .factory:after{opacity:.28; background-size: 860px 860px; animation-duration: 11s}
+  @keyframes twinkle{50%{opacity:.85; transform:translate3d(-10px, 12px, 0)}}
+
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;}
+
+  /* Stage UI */
+  .builder{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:12px;
+    padding:16px;
+    position:relative;
+    z-index:2;
+  }
+  .prompt{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    padding:12px 12px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(0,0,0,.16);
+  }
+  .promptLeft{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap}
+  .promptLeft .label{font-weight:1000; opacity:.88}
+  .promptLeft .qTitle{font-size: clamp(18px, 2.4vw, 28px); font-weight:1000; letter-spacing:.02em}
+
+  .timerBox{display:flex; gap:10px; align-items:center;}
+  .ring{
+    width:56px; height:56px;
+    border-radius:50%;
+    border:1px solid rgba(170,220,255,.18);
+    display:grid; place-items:center;
+    background:conic-gradient(var(--hot) 0deg, rgba(255,255,255,.10) 0deg);
+  }
+  .ring.low{background:conic-gradient(var(--bad) 0deg, rgba(255,255,255,.10) 0deg)}
+  .timeText{font-weight:1000}
+
+  .panel{
+    padding:14px;
+    border-radius:20px;
+    border:1px solid rgba(170,220,255,.14);
+    background:rgba(255,255,255,.04);
+  }
+
+  /* Sentence builder */
+  .sentenceArea{min-height:74px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center}
+  .token{
+    border:1px solid rgba(170,220,255,.18);
+    /* Brighter word tiles for mobile readability */
+    background:linear-gradient(135deg, rgba(210,175,255,.55), rgba(255,255,255,.16));
+    border-color: rgba(235,215,255,.65);
+    border-radius:999px;
+    padding:12px 14px;
+    font-weight:1000;
+    font-size: clamp(16px, 2.2vw, 22px);
+    color:#151226;
+    text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    cursor:pointer;
+    user-select:none;
+    transition: transform .12s ease, background .2s ease, filter .2s ease;
+    box-shadow: 0 12px 26px rgba(0,0,0,.35);
+  }
+  .token:active{transform:scale(.98)}
+  .token.dim{opacity:.35; filter:saturate(.4); cursor:not-allowed}
+  .token.built{
+    border-color: rgba(255,255,255,.16);
+    background:linear-gradient(135deg, rgba(170,120,255,.30), rgba(0,0,0,.22));
+    /* Brighter built-word text for easier reading */
+    color: #ffffff;
+    text-shadow: 0 1px 0 rgba(0,0,0,.55), 0 0 14px rgba(255,212,90,.22);
+  }
+  .shake{animation: shake .35s ease-in-out 1}
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    50%{transform:translateX(6px)}
+    75%{transform:translateX(-4px)}
+  }
+
+  /* Choice rockets */
+  .choiceGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:720px){.choiceGrid{grid-template-columns:1fr}}
+  .choiceBtn{
+    border:1px solid rgba(170,220,255,.28);
+    background:linear-gradient(135deg, rgba(80,210,255,.14), rgba(255,45,138,.10));
+    color:var(--txt);
+    border-radius:22px;
+    padding:16px 14px;
+    font-weight:1000;
+    cursor:pointer;
+    transition: transform .12s ease, background .2s ease, filter .2s ease;
+    display:flex; flex-direction:column; align-items:stretch; gap:10px;
+    user-select:none;
+    min-height: 104px;
+  }
+  .choiceBtn:hover{background:linear-gradient(135deg, rgba(80,210,255,.18), rgba(255,45,138,.14))}
+  .choiceBtn:active{transform:scale(.98)}
+  .choiceHead{display:flex; justify-content:space-between; align-items:center; gap:10px}
+  .choiceEmoji{font-size:30px}
+  .choiceLabel{opacity:.9}
+  .choiceText{font-size: clamp(18px, 2.3vw, 26px); line-height:1.25; letter-spacing:.01em}
+  .choiceBtn.correct{border-color: rgba(120,255,183,.55); box-shadow:0 0 0 2px rgba(120,255,183,.14) inset}
+  .choiceBtn.wrong{border-color: rgba(255,90,122,.55); box-shadow:0 0 0 2px rgba(255,90,122,.14) inset}
+
+  .status{
+    text-align:center;
+    font-weight:1000;
+    padding:10px 12px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(0,0,0,.16);
+  }
+  .status.good{border-color: rgba(120,255,183,.35); background: rgba(120,255,183,.10)}
+  .status.bad{border-color: rgba(255,90,122,.35); background: rgba(255,90,122,.10)}
+
+  canvas#fx{position:fixed; inset:0; pointer-events:none; z-index:50;}
+
+  /* Overlay */
+  .overlay{
+    position:fixed; inset:0; z-index:80;
+    display:none;
+    padding:16px;
+    background:rgba(0,0,0,.58);
+    backdrop-filter: blur(10px);
+  }
+  .overlay.show{display:grid; place-items:center;}
+  .overlayCard{
+    width:min(920px, 100%);
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    border-radius:24px;
+    box-shadow:0 26px 90px rgba(0,0,0,.70);
+    overflow:hidden;
+  }
+  .overlayCard .head{padding:16px 16px 0}
+  .overlayCard .body{padding:16px}
+  .ruleList{display:grid; gap:10px; margin:10px 0 0}
+  .ruleItem{
+    padding:12px 12px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(0,0,0,.16);
+    line-height:1.4;
+    font-weight:850;
+  }
+</style>
+</head>
+<body class="dust">
+<canvas id="fx"></canvas>
+
+<div class="overlay" id="stageOverlay" aria-hidden="true">
+  <div class="overlayCard">
+    <div class="head">
+      <h2 class="big" style="font-size: clamp(22px, 3vw, 34px); margin:0" id="ovTitle">✅ Quick Rules</h2>
+      <div class="hint" id="ovSub" style="margin-top:6px">Read this fast, then press START.</div>
+    </div>
+    <div class="body">
+      <div class="ruleList" id="ovRules"></div>
+      <div class="row" style="justify-content:center; gap:10px; margin-top:14px">
+        <button class="btn primary pulse" id="ovStartBtn">▶ START</button>
+        <button class="btn" id="ovBackBtn">🏠 <span id="tBackHome">Home</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="screen show" id="home">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="badge">🏭</div>
+        <div>
+          <div class="title" id="tTitle">Present Continuous Missions</div>
+          <div class="subtitle" id="tSub">Factory Theme – arrange & choose the correct sentence</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+        <div class="pill">
+          🌐
+          <button class="btn" id="langTH">TH</button>
+          <button class="btn" id="langEN">EN</button>
+        </div>
+        <div class="pill">
+          🔊 <button class="btn" id="soundBtn">ON</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="head">
+          <h1 class="big" id="tMission">🚀 Mission: Present Continuous</h1>
+          <div class="hint" id="tHow">
+            <b>Stage 1</b>: Arrange the sentence (affirmative / negative / question) – 20 questions.<br/>
+            <b>Stage 2</b>: Choose the correct sentence (A/B) – 25 questions – <b>10 seconds</b> per question in Challenge mode.
+          </div>
+        </div>
+        <div class="body" style="display:grid; gap:12px">
+          <div class="pill" style="justify-content:center">
+            👤 <span id="tName">Name</span>:
+            <input id="player" placeholder="nickname…" style="width:180px; border:none; outline:none; background:transparent; color:var(--txt); font-weight:950">
+            <span style="opacity:.8">|</span>
+            🎮 <span id="tMode">Mode</span>:
+            <select id="modeSel" style="border:1px solid rgba(170,220,255,.25); background:rgba(0,0,0,.18); color:var(--txt); border-radius:12px; padding:8px 10px; font-weight:950; outline:none">
+              <option value="practice">Practice (No timer)</option>
+              <option value="challenge">Challenge (10s)</option>
+            </select>
+          </div>
+
+          <div class="card" style="border-radius:20px">
+            <div class="body">
+              <div class="row">
+                <div class="pill" id="tRule1">✅ Structure: am/is/are + V-ing</div>
+                <div class="pill" id="tRule2">❌ Negative: am not / is not / are not + V-ing</div>
+              </div>
+              <div style="height:8px"></div>
+              <div class="hint" id="tRule3">❓ Question: Am/Is/Are + subject + V-ing ?</div>
+            </div>
+          </div>
+
+          <div class="row" style="justify-content:center">
+            <button class="btn primary pulse" id="startBtn">▶ START</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <h2 class="big" style="font-size: clamp(20px, 2.6vw, 32px); margin:0" id="tFactory">🏭 Factory Arena</h2>
+          <div class="hint" id="tFactoryHint">Big buttons, clear text, mobile-friendly.</div>
+        </div>
+        <div class="body">
+          <div class="factory" style="display:grid; place-items:center; padding:16px">
+            <div style="text-align:center">
+              <div style="font-size:74px">⚙️</div>
+              <div style="font-weight:1000; font-size:20px; margin-top:6px" id="tReady">Ready to play!</div>
+              <div style="opacity:.85; margin-top:6px" id="tNote">Stage 1 → Stage 2 → Summary</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="screen" id="game">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="badge">🔧</div>
+        <div>
+          <div class="title" id="gTitle">Factory Mission</div>
+          <div class="subtitle" id="gSub">Present Continuous</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+        <div class="pill">🛰️ <span id="tStage">Stage</span>: <span id="stageLabel">1</span></div>
+        <div class="pill">👤 <span id="who">-</span></div>
+        <div class="pill">✅ <span id="tScore">Score</span>: <span id="score">0</span></div>
+        <div class="pill">📌 <span id="tQ">Q</span>: <span id="qnum">1</span>/<span id="qtot">20</span></div>
+        <div class="pill" id="timerPill" style="display:none">⏱️ <span id="tTimer">Time</span>: <span id="secLeft">10</span>s</div>
+        <button class="btn" id="homeBtn">🏠 <span id="tHome">Home</span></button>
+      </div>
+    </div>
+
+    <div class="factory">
+      <!-- Stage 1: Arrange -->
+      <div id="stage1Area" class="builder">
+        <div class="prompt">
+          <div class="promptLeft">
+            <div class="label" id="s1Label">Arrange</div>
+            <div class="qTitle" id="s1Type">Sentence</div>
+          </div>
+          <div class="hint" id="s1Hint" style="margin-left:auto">Tap words to build the sentence. Tap built words to remove.</div>
+        </div>
+
+        <div class="panel">
+          <div class="hint" id="builtHint" style="text-align:center; margin-bottom:10px">Your sentence</div>
+          <div class="sentenceArea" id="builtArea"></div>
+        </div>
+
+        <div class="panel">
+          <div class="hint" id="bankHint" style="text-align:center; margin-bottom:10px">Word bank (shuffled)</div>
+          <div class="sentenceArea" id="bankArea"></div>
+        </div>
+
+        <div class="row" style="justify-content:center">
+          <button class="btn" id="undoBtn">↩ Undo</button>
+          <button class="btn danger" id="resetBtn">🧹 Reset</button>
+        </div>
+
+        <div class="status" id="status">Ready!</div>
+
+        <!-- Shown when 2 wrong tries reveal the answer, so kids can read before moving on -->
+        <div class="row" style="justify-content:center">
+          <button class="btn primary" id="s1NextBtn" style="display:none">Next ▶</button>
+        </div>
+      </div>
+
+      <!-- Stage 2: Choose -->
+      <div id="stage2Area" class="builder" style="display:none">
+        <div class="prompt">
+          <div class="promptLeft">
+            <div class="label" id="s2Label">Choose</div>
+            <div class="qTitle" id="s2Title">Which sentence is correct?</div>
+          </div>
+          <div class="timerBox" id="timerBox" style="display:none">
+            <div class="ring" id="ring"><div class="timeText" id="ringText">10</div></div>
+            <div style="opacity:.9; font-weight:950" id="tPerQ">per question</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="hint" id="s2Hint" style="text-align:center">Pick A or B</div>
+          <div class="choiceGrid">
+            <button class="choiceBtn" id="optA">
+              <div class="choiceHead">
+                <div class="choiceLabel">A</div>
+                <div class="choiceEmoji">🚀</div>
+              </div>
+              <div class="choiceText" id="optAText">...</div>
+            </button>
+            <button class="choiceBtn" id="optB">
+              <div class="choiceHead">
+                <div class="choiceLabel">B</div>
+                <div class="choiceEmoji">🛸</div>
+              </div>
+              <div class="choiceText" id="optBText">...</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="status" id="status2">Ready!</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="screen" id="summary">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="badge">🏁</div>
+        <div>
+          <div class="title" id="sumTitle">Mission Complete</div>
+          <div class="subtitle" id="sumSub">Factory Report</div>
+        </div>
+      </div>
+      <button class="btn" id="sumHome">🏠 <span id="tHome2">Home</span></button>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h1 class="big" id="sumBig">✅ Great job!</h1>
+        <div class="hint" id="sumWho">Player: -</div>
+      </div>
+      <div class="body" style="display:grid; gap:12px">
+        <div class="grid2">
+          <div class="card" style="border-radius:20px">
+            <div class="body">
+              <div style="font-weight:1000; font-size:18px" id="sumS1">Stage 1 score</div>
+              <div style="font-size:44px; font-weight:1000" id="sumS1v">0</div>
+              <div class="hint" id="sumS1h">/ 20</div>
+            </div>
+          </div>
+          <div class="card" style="border-radius:20px">
+            <div class="body">
+              <div style="font-weight:1000; font-size:18px" id="sumS2">Stage 2 score</div>
+              <div style="font-size:44px; font-weight:1000" id="sumS2v">0</div>
+              <div class="hint" id="sumS2h">/ 25</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="border-radius:20px">
+          <div class="body" style="text-align:center">
+            <div style="font-weight:1000; font-size:18px" id="sumTotal">Total</div>
+            <div style="font-size:56px; font-weight:1000" id="sumTotalV">0</div>
+            <div class="hint" id="sumTotalH">/ 45</div>
+          </div>
+        </div>
+
+        <div class="row" style="justify-content:center">
+          <button class="btn" id="replayS1">🔁 Stage 1</button>
+          <button class="btn" id="replayS2">🔁 Stage 2</button>
+          <button class="btn primary" id="replayAll">🚀 Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ---------- Language pack (UI only) ----------
+  let lang = "TH";
+  const L = {
+    EN:{
+      tTitle:"Present Continuous Missions",
+      tSub:"Factory Theme – arrange & choose the correct sentence",
+      tMission:"🚀 Mission: Present Continuous",
+      tHow:"<b>Stage 1</b>: Arrange the sentence (affirmative / negative / question) – 20 questions.<br/><b>Stage 2</b>: Choose the correct sentence (A/B) – 25 questions – <b>10 seconds</b> per question in Challenge mode.",
+      tName:"Name", tMode:"Mode",
+      practice:"Practice (No timer)",
+      challenge:"Challenge (10s)",
+      tRule1:"✅ Structure: am/is/are + V-ing",
+      tRule2:"❌ Negative: am not / is not / are not + V-ing",
+      tRule3:"❓ Question: Am/Is/Are + subject + V-ing ?",
+      tFactory:"🏭 Factory Arena",
+      tFactoryHint:"Big buttons, clear text, mobile-friendly.",
+      tReady:"Ready to play!",
+      tNote:"Stage 1 → Stage 2 → Summary",
+      tStage:"Stage", tScore:"Score", tQ:"Q", tTimer:"Time", tHome:"Home", tBackHome:"Home",
+      s1Label:"Arrange", s1Type:"Sentence",
+      s1Hint:"Tap words to build the sentence. Tap built words to remove.",
+      builtHint:"Your sentence", bankHint:"Word bank (shuffled)",
+      undo:"Undo", reset:"Reset",
+      next:"Next",
+      s2Label:"Choose", s2Title:"Which sentence is correct?", s2Hint:"Pick A or B",
+      ready:"Ready!",
+      ovS1Title:"✅ Stage 1 Rules",
+      ovS1Sub:"Arrange 20 sentences. No timer in Practice.",
+      ovS2Title:"✅ Stage 2 Rules",
+      ovS2Sub:"Choose A/B. Challenge mode = 10 seconds per question.",
+      ovStart:"▶ START",
+      sumTitle:"Mission Complete",
+      sumSub:"Factory Report",
+      sumBig:"✅ Great job!",
+      sumS1:"Stage 1 score",
+      sumS2:"Stage 2 score",
+      sumTotal:"Total",
+      replayS1:"🔁 Stage 1",
+      replayS2:"🔁 Stage 2",
+      replayAll:"🚀 Play Again"
+    },
+    TH:{
+      tTitle:"ภารกิจ Present Continuous",
+      tSub:"ธีมโรงงาน – เรียงประโยค & เลือกประโยคที่ถูก",
+      tMission:"🚀 ภารกิจ: Present Continuous",
+      tHow:"<b>ด่าน 1</b>: เรียงประโยค (บอกเล่า/ปฏิเสธ/คำถาม) – 20 ข้อ<br/><b>ด่าน 2</b>: เลือกประโยคที่ถูก (A/B) – 25 ข้อ – โหมดทดสอบจับเวลา <b>10 วินาที</b> ต่อข้อ",
+      tName:"ชื่อเล่น", tMode:"โหมด",
+      practice:"ฝึก (ไม่จับเวลา)",
+      challenge:"ทดสอบ (10 วิ)",
+      tRule1:"✅ โครงสร้าง: am/is/are + V-ing",
+      tRule2:"❌ ปฏิเสธ: am not / is not / are not + V-ing",
+      tRule3:"❓ คำถาม: Am/Is/Are + ประธาน + V-ing ?",
+      tFactory:"🏭 สนามโรงงาน",
+      tFactoryHint:"ปุ่มใหญ่ อ่านชัด เล่นมือถือสบาย",
+      tReady:"พร้อมลุยแล้ว!",
+      tNote:"ด่าน 1 → ด่าน 2 → สรุปคะแนน",
+      tStage:"ด่าน", tScore:"คะแนน", tQ:"ข้อ", tTimer:"เวลา", tHome:"หน้าแรก", tBackHome:"หน้าแรก",
+      s1Label:"เรียง", s1Type:"ประโยค",
+      s1Hint:"กดคำเพื่อเรียงเป็นประโยค (กดคำที่เรียงแล้วเพื่อเอาออก)",
+      builtHint:"ประโยคของเรา", bankHint:"คลังคำ (สุ่ม)",
+      undo:"ย้อนกลับ", reset:"ล้างใหม่",
+      next:"ข้อถัดไป",
+      s2Label:"เลือก", s2Title:"ประโยคไหนถูกไวยากรณ์?", s2Hint:"เลือก A หรือ B",
+      ready:"พร้อม!",
+      ovS1Title:"✅ กติกาด่าน 1",
+      ovS1Sub:"เรียงประโยค 20 ข้อ (โหมดฝึกไม่จับเวลา)",
+      ovS2Title:"✅ กติกาด่าน 2",
+      ovS2Sub:"เลือก A/B (โหมดทดสอบจับเวลา 10 วิ/ข้อ)",
+      ovStart:"▶ เริ่ม",
+      sumTitle:"จบภารกิจแล้วจ้า",
+      sumSub:"รายงานคะแนน",
+      sumBig:"✅ เก่งมาก!",
+      sumS1:"คะแนนด่าน 1",
+      sumS2:"คะแนนด่าน 2",
+      sumTotal:"รวม",
+      replayS1:"🔁 เล่นด่าน 1",
+      replayS2:"🔁 เล่นด่าน 2",
+      replayAll:"🚀 เล่นใหม่ทั้งชุด"
+    }
+  };
+
+  function t(key){ return (L[lang] && L[lang][key]) ? L[lang][key] : key; }
+  function applyLang(){
+    document.getElementById('tTitle').textContent = t('tTitle');
+    document.getElementById('tSub').textContent = t('tSub');
+    document.getElementById('tMission').textContent = t('tMission');
+    document.getElementById('tHow').innerHTML = t('tHow');
+    document.getElementById('tName').textContent = t('tName');
+    document.getElementById('tMode').textContent = t('tMode');
+
+    const modeSel = document.getElementById('modeSel');
+    modeSel.options[0].textContent = t('practice');
+    modeSel.options[1].textContent = t('challenge');
+
+    document.getElementById('tRule1').textContent = t('tRule1');
+    document.getElementById('tRule2').textContent = t('tRule2');
+    document.getElementById('tRule3').textContent = t('tRule3');
+    document.getElementById('tFactory').textContent = t('tFactory');
+    document.getElementById('tFactoryHint').textContent = t('tFactoryHint');
+    document.getElementById('tReady').textContent = t('tReady');
+    document.getElementById('tNote').textContent = t('tNote');
+
+    document.getElementById('tStage').textContent = t('tStage');
+    document.getElementById('tScore').textContent = t('tScore');
+    document.getElementById('tQ').textContent = t('tQ');
+    document.getElementById('tTimer').textContent = t('tTimer');
+    document.getElementById('tHome').textContent = t('tHome');
+    document.getElementById('tBackHome').textContent = t('tBackHome');
+
+    document.getElementById('s1Label').textContent = t('s1Label');
+    document.getElementById('s1Type').textContent = t('s1Type');
+    document.getElementById('s1Hint').textContent = t('s1Hint');
+    document.getElementById('builtHint').textContent = t('builtHint');
+    document.getElementById('bankHint').textContent = t('bankHint');
+    document.getElementById('undoBtn').textContent = "↩ " + t('undo');
+    document.getElementById('resetBtn').textContent = "🧹 " + t('reset');
+    document.getElementById('s1NextBtn').textContent = "▶ " + t('next');
+
+    document.getElementById('s2Label').textContent = t('s2Label');
+    document.getElementById('s2Title').textContent = t('s2Title');
+    document.getElementById('s2Hint').textContent = t('s2Hint');
+
+    document.getElementById('sumTitle').textContent = t('sumTitle');
+    document.getElementById('sumSub').textContent = t('sumSub');
+    document.getElementById('sumBig').textContent = t('sumBig');
+    document.getElementById('sumS1').textContent = t('sumS1');
+    document.getElementById('sumS2').textContent = t('sumS2');
+    document.getElementById('sumTotal').textContent = t('sumTotal');
+    document.getElementById('replayS1').textContent = t('replayS1');
+    document.getElementById('replayS2').textContent = t('replayS2');
+    document.getElementById('replayAll').textContent = t('replayAll');
+
+    // overlay dynamic text set in showOverlay()
+  }
+
+  // ---------- Audio ----------
+  let soundOn = true;
+  let actx = null;
+  function ensureAudio(){ if(actx) return; actx=new (window.AudioContext||window.webkitAudioContext)(); }
+  function beep(freq=880,dur=0.08,type="triangle",gain=0.06){
+    if(!soundOn) return;
+    try{
+      ensureAudio();
+      const o=actx.createOscillator();
+      const g=actx.createGain();
+      o.type=type; o.frequency.value=freq;
+      g.gain.value=gain;
+      o.connect(g); g.connect(actx.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime+dur);
+      o.stop(actx.currentTime+dur);
+    }catch(e){}
+  }
+  function sparkleChime(){ beep(880,0.08,"triangle",0.07); setTimeout(()=>beep(1200,0.08,"triangle",0.06),80); }
+  function sadBuzz(){ beep(220,0.12,"sawtooth",0.05); setTimeout(()=>beep(180,0.10,"sawtooth",0.04),80); }
+
+  // ---------- Confetti canvas ----------
+  const canvas = document.getElementById('fx');
+  const ctx = canvas.getContext('2d');
+  let W=0,H=0;
+  function resize(){ W=canvas.width=window.innerWidth*devicePixelRatio; H=canvas.height=window.innerHeight*devicePixelRatio; }
+  window.addEventListener('resize', resize, {passive:true});
+  resize();
+
+  const particles=[];
+  // Yellow sparkle (requested): keep the celebration visible on dark backgrounds
+  const YELLOW_SPARK = [
+    'rgba(255,212,90,1)',
+    'rgba(255,232,140,1)',
+    'rgba(255,196,60,1)'
+  ];
+  function burst(x,y,count=70){
+    const sx=x*devicePixelRatio, sy=y*devicePixelRatio;
+    for(let i=0;i<count;i++){
+      particles.push({
+        x:sx, y:sy,
+        vx:(Math.random()*2-1)*7*devicePixelRatio,
+        vy:(Math.random()*2-1)*7*devicePixelRatio - 4*devicePixelRatio,
+        g:0.18*devicePixelRatio,
+        life: 60 + Math.random()*40,
+        r: 2.5*devicePixelRatio + Math.random()*2.5*devicePixelRatio,
+        a:1,
+        c: YELLOW_SPARK[Math.floor(Math.random()*YELLOW_SPARK.length)]
+      });
+    }
+  }
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=particles.length-1;i>=0;i--){
+      const p=particles[i];
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+      p.a = Math.max(0, p.life/90);
+      ctx.globalAlpha = p.a;
+      ctx.fillStyle = p.c;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+      if(p.life<=0) particles.splice(i,1);
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  // ---------- Helpers ----------
+  function show(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+    document.getElementById(id).classList.add('show');
+  }
+  function shuffle(arr){
+    const a=arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  const PUNCT = new Set(['?','!','.',',']);
+  function tokensToText(tokens){
+    let out='';
+    for(const tok of tokens){
+      if(PUNCT.has(tok)) out += tok;
+      else out += (out? ' ' : '') + tok;
+    }
+    return out;
+  }
+
+  // ---------- Question banks ----------
+  const stage1 = [
+    {type:"Affirmative", tokens:["She","is","cooking","dinner","now","."]},
+    {type:"Affirmative", tokens:["They","are","playing","football","right","now","."]},
+    {type:"Affirmative", tokens:["I","am","studying","English","at","the","moment","."]},
+    {type:"Affirmative", tokens:["My","brother","is","taking","a","shower","now","."]},
+    {type:"Affirmative", tokens:["We","are","waiting","for","the","bus","now","."]},
+    {type:"Affirmative", tokens:["The","cat","is","sleeping","on","the","sofa","now","."]},
+    {type:"Affirmative", tokens:["My","parents","are","watching","TV","right","now","."]},
+    {type:"Affirmative", tokens:["He","is","writing","a","message","now","."]},
+
+    {type:"Negative", tokens:["I","am","not","sleeping","now","."]},
+    {type:"Negative", tokens:["She","is","not","doing","her","homework","now","."]},
+    {type:"Negative", tokens:["They","are","not","listening","to","the","teacher","now","."]},
+    {type:"Negative", tokens:["He","is","not","wearing","a","jacket","today","."]},
+    {type:"Negative", tokens:["We","are","not","playing","games","now","."]},
+    {type:"Negative", tokens:["The","kids","are","not","running","now","."]},
+
+    {type:"Question", tokens:["Is","she","reading","a","book","now","?"]},
+    {type:"Question", tokens:["Are","they","eating","lunch","right","now","?"]},
+    {type:"Question", tokens:["Am","I","doing","it","correctly","?"]},
+    {type:"Question", tokens:["Is","he","playing","the","piano","now","?"]},
+    {type:"Question", tokens:["Are","we","going","home","now","?"]},
+    {type:"Question", tokens:["Are","you","studying","for","the","test","now","?"]}
+  ];
+
+  const stage2Base = [
+    {A:"She is cooking now.", B:"She cooking now.", correct:"A"},
+    {A:"They are playing outside.", B:"They is playing outside.", correct:"A"},
+    {A:"I am study English now.", B:"I am studying English now.", correct:"B"},
+    {A:"He is not listening right now.", B:"He not is listening right now.", correct:"A"},
+    {A:"We are waiting for you.", B:"We waiting for you.", correct:"A"},
+    {A:"The dog is running fast.", B:"The dog are running fast.", correct:"A"},
+    {A:"My mom is washing the dishes.", B:"My mom washing the dishes.", correct:"A"},
+    {A:"Are you doing your homework now?", B:"Do you doing your homework now?", correct:"A"},
+    {A:"Is he playing basketball now?", B:"He is playing basketball now?", correct:"A"},
+    {A:"She is not wearing shoes.", B:"She not is wearing shoes.", correct:"A"},
+    {A:"They are not coming today.", B:"They are not come today.", correct:"A"},
+    {A:"I am not watching TV now.", B:"I not am watching TV now.", correct:"A"},
+    {A:"Are we going the right way?", B:"Are we go the right way?", correct:"A"},
+    {A:"Is the baby sleeping now?", B:"Is the baby sleep now?", correct:"A"},
+    {A:"The students are writing.", B:"The students is writing.", correct:"A"},
+    {A:"He is cleaning his room.", B:"He is clean his room.", correct:"A"},
+    {A:"Are they speaking Thai now?", B:"Are they speak Thai now?", correct:"A"},
+    {A:"She is singing at the moment.", B:"She singing at the moment.", correct:"A"},
+    {A:"We are not studying now.", B:"We are not study now.", correct:"A"},
+    {A:"Is your sister dancing now?", B:"Is your sister dance now?", correct:"A"},
+    {A:"My friends are taking photos.", B:"My friends are take photos.", correct:"A"},
+    {A:"I am using my phone now.", B:"I using my phone now.", correct:"A"},
+    {A:"Are you listening to music?", B:"Are you listen to music?", correct:"A"},
+    {A:"He is not driving today.", B:"He does not driving today.", correct:"A"},
+    {A:"The birds are flying.", B:"The birds is flying.", correct:"A"}
+  ];
+
+  // Stage 2 pool (random order + random A/B positions)
+  let stage2Pool = [];
+  function prepareStage2Pool(){
+    stage2Pool = shuffle(stage2Base).map(q=>{
+      const flip = Math.random() < 0.5;
+      if(!flip) return {A:q.A, B:q.B, correct:q.correct};
+      // swap A/B and swap correct letter
+      const newCorrect = (q.correct === "A") ? "B" : "A";
+      return {A:q.B, B:q.A, correct:newCorrect};
+    });
+  }
+
+  // ---------- State ----------
+  let mode = "challenge";
+  let playerName = "";
+  let stage = 1;
+  let score = 0;
+  let scoreS1 = 0;
+  let scoreS2 = 0;
+  let qIndex = 0;
+
+  // timers
+  let timer = null;
+  let secLeft = 10;
+  const TIME_PER_Q = 10; // user requested
+
+  // stage1 working
+  let s1CurrentTokens = [];
+  let s1Bank = [];
+  let s1Built = [];
+  let s1WrongCount = 0;
+  let s1RevealLock = false;
+
+  // elements
+  const whoEl = document.getElementById('who');
+  const scoreEl = document.getElementById('score');
+  const stageLabelEl = document.getElementById('stageLabel');
+  const qnumEl = document.getElementById('qnum');
+  const qtotEl = document.getElementById('qtot');
+  const timerPill = document.getElementById('timerPill');
+  const secLeftEl = document.getElementById('secLeft');
+  const ring = document.getElementById('ring');
+  const ringText = document.getElementById('ringText');
+  const timerBox = document.getElementById('timerBox');
+
+  const status1 = document.getElementById('status');
+  const builtArea = document.getElementById('builtArea');
+  const bankArea = document.getElementById('bankArea');
+  const s1NextBtn = document.getElementById('s1NextBtn');
+
+  const status2 = document.getElementById('status2');
+  const optA = document.getElementById('optA');
+  const optB = document.getElementById('optB');
+  const optAText = document.getElementById('optAText');
+  const optBText = document.getElementById('optBText');
+
+  // ---------- Overlay ----------
+  const overlay = document.getElementById('stageOverlay');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovSub = document.getElementById('ovSub');
+  const ovRules = document.getElementById('ovRules');
+  const ovStartBtn = document.getElementById('ovStartBtn');
+  const ovBackBtn = document.getElementById('ovBackBtn');
+  let overlayTargetStage = 1;
+
+  function showOverlay(forStage){
+    overlayTargetStage = forStage;
+    ovRules.innerHTML = "";
+    if(forStage===1){
+      ovTitle.textContent = t('ovS1Title');
+      ovSub.textContent = t('ovS1Sub');
+      [
+        "Arrange words into a correct sentence.",
+        "Tap a built word to remove it.",
+        "You can use Undo / Reset."
+      ].forEach((raw)=>{
+        const div=document.createElement('div');
+        div.className='ruleItem';
+        div.textContent = (lang==='TH') ? (
+          raw==="Arrange words into a correct sentence." ? "เรียงคำให้เป็นประโยคที่ถูกต้อง" :
+          raw==="Tap a built word to remove it." ? "กดคำที่เรียงแล้วเพื่อเอาออก" :
+          "ใช้ปุ่ม ย้อนกลับ / ล้างใหม่ ได้"
+        ) : raw;
+        ovRules.appendChild(div);
+      });
+    }else{
+      ovTitle.textContent = t('ovS2Title');
+      ovSub.textContent = t('ovS2Sub');
+      const timerLine = (mode==='challenge') ? "Timer: 10 seconds per question." : "No timer in Practice mode.";
+      const thTimerLine = (mode==='challenge') ? "จับเวลา: 10 วินาทีต่อข้อ" : "โหมดฝึก: ไม่จับเวลา";
+      [
+        "Choose the grammatically correct sentence.",
+        "A or B – tap fast & think fast.",
+        (lang==='TH')? thTimerLine : timerLine
+      ].forEach((line)=>{
+        const div=document.createElement('div');
+        div.className='ruleItem';
+        div.textContent = line;
+        ovRules.appendChild(div);
+      });
+    }
+
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+  }
+  function hideOverlay(){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+  }
+
+  ovBackBtn.addEventListener('click', ()=>{ hideOverlay(); show('home'); stopTimer(); });
+  ovStartBtn.addEventListener('click', ()=>{ hideOverlay(); startStage(overlayTargetStage); });
+
+  // ---------- Stage control ----------
+  function setHeader(){
+    whoEl.textContent = playerName || '-';
+    scoreEl.textContent = String(score);
+    stageLabelEl.textContent = String(stage);
+    qnumEl.textContent = String(qIndex+1);
+    qtotEl.textContent = String(stage===1 ? stage1.length : stage2Pool.length);
+  }
+
+  function setTimerUI(visible){
+    timerPill.style.display = visible ? 'flex' : 'none';
+    timerBox.style.display = visible ? 'flex' : 'none';
+  }
+
+  function setRing(sec){
+    const pct = Math.max(0, Math.min(1, sec / TIME_PER_Q));
+    const deg = Math.round(pct * 360);
+    ring.style.background = `conic-gradient(${sec<=3? 'var(--bad)' : 'var(--hot)'} ${deg}deg, rgba(255,255,255,.10) 0deg)`;
+    ring.classList.toggle('low', sec<=3);
+    ringText.textContent = String(sec);
+  }
+
+  function stopTimer(){
+    if(timer){ clearInterval(timer); timer=null; }
+  }
+
+  function startTimer(){
+    stopTimer();
+    secLeft = TIME_PER_Q;
+    secLeftEl.textContent = String(secLeft);
+    setRing(secLeft);
+    timer = setInterval(()=>{
+      secLeft -= 1;
+      secLeftEl.textContent = String(secLeft);
+      setRing(secLeft);
+      if(soundOn && secLeft<=5 && secLeft>0){ beep(520,0.03,'square',0.03); }
+      if(secLeft<=0){
+        stopTimer();
+        // time out => wrong => next
+        status2.className = 'status bad';
+        status2.textContent = (lang==='TH') ? 'หมดเวลา! ไปข้อต่อไป…' : 'Time out! Next…';
+        sadBuzz();
+        setTimeout(()=>nextQuestion(), 500);
+      }
+    }, 1000);
+  }
+
+  function startStage(s){
+    stage = s;
+    qIndex = 0;
+    if(stage===1){
+      document.getElementById('stage1Area').style.display = 'grid';
+      document.getElementById('stage2Area').style.display = 'none';
+      setTimerUI(false);
+      loadStage1();
+    }else{
+      document.getElementById('stage1Area').style.display = 'none';
+      document.getElementById('stage2Area').style.display = 'grid';
+      // randomize Stage 2 so correct answer is not always A
+      prepareStage2Pool();
+      const timed = (mode==='challenge');
+      setTimerUI(timed);
+      loadStage2();
+    }
+    setHeader();
+    show('game');
+  }
+
+  function nextQuestion(){
+    // called for both stages
+    qIndex += 1;
+    if(stage===1){
+      if(qIndex >= stage1.length){
+        // go stage2 overlay
+        scoreS1 = score;
+        stage = 2;
+        qIndex = 0;
+        showOverlay(2);
+        // update header now to show stage2 totals
+        stageLabelEl.textContent = '2';
+        qtotEl.textContent = String(stage2Pool.length);
+        qnumEl.textContent = '1';
+        return;
+      }
+      loadStage1();
+      setHeader();
+    }else{
+      if(qIndex >= stage2Pool.length){
+        finish();
+        return;
+      }
+      loadStage2();
+      setHeader();
+    }
+  }
+
+  function finish(){
+    stopTimer();
+    scoreS2 = score - scoreS1;
+    document.getElementById('sumWho').textContent = (lang==='TH' ? 'ผู้เล่น: ' : 'Player: ') + (playerName||'-');
+    document.getElementById('sumS1v').textContent = String(scoreS1);
+    document.getElementById('sumS2v').textContent = String(scoreS2);
+    document.getElementById('sumTotalV').textContent = String(scoreS1 + scoreS2);
+
+    // little celebration if strong
+    const pct = (scoreS1 + scoreS2) / 45;
+    if(pct >= 0.75){
+      sparkleChime();
+      burst(window.innerWidth*0.5, window.innerHeight*0.35, 120);
+      setTimeout(()=>burst(window.innerWidth*0.35, window.innerHeight*0.45, 90), 120);
+      setTimeout(()=>burst(window.innerWidth*0.65, window.innerHeight*0.45, 90), 240);
+    }else{
+      beep(660,0.08,'triangle',0.05);
+    }
+    show('summary');
+  }
+
+  // ---------- Stage 1 logic ----------
+  function renderTokens(container, tokens, onClick, className){
+    container.innerHTML = '';
+    tokens.forEach((tok, idx)=>{
+      const b=document.createElement('button');
+      b.className = 'token' + (className? ' '+className: '');
+      b.textContent = tok;
+      b.addEventListener('click', ()=> onClick(idx));
+      container.appendChild(b);
+    });
+  }
+
+  function loadStage1(){
+    const q = stage1[qIndex];
+    s1CurrentTokens = q.tokens.slice();
+    s1Built = [];
+    s1Bank = shuffle(q.tokens);
+    s1WrongCount = 0;
+    s1RevealLock = false;
+    s1NextBtn.style.display = 'none';
+    document.getElementById('undoBtn').disabled = false;
+    document.getElementById('resetBtn').disabled = false;
+    builtArea.style.pointerEvents = 'auto';
+    bankArea.style.pointerEvents = 'auto';
+
+    document.getElementById('s1Type').textContent = (lang==='TH')
+      ? (q.type==='Affirmative' ? 'บอกเล่า' : q.type==='Negative' ? 'ปฏิเสธ' : 'คำถาม')
+      : q.type;
+
+    status1.className = 'status';
+    status1.textContent = t('ready');
+
+    render();
+  }
+
+  function render(){
+    // built
+    renderTokens(builtArea, s1Built, (idx)=>{
+      // remove built token back to bank end
+      beep(420,0.05,'triangle',0.05);
+      const tok = s1Built.splice(idx,1)[0];
+      s1Bank.push(tok);
+      render();
+    }, 'built');
+
+    // bank
+    renderTokens(bankArea, s1Bank, (idx)=>{
+      beep(760,0.05,'triangle',0.05);
+      const tok = s1Bank.splice(idx,1)[0];
+      s1Built.push(tok);
+      render();
+      maybeAutoCheck();
+    });
+
+    // if built empty, show placeholder
+    if(s1Built.length===0){
+      builtArea.innerHTML = `<div class="hint" style="opacity:.85">${lang==='TH'?'กดคำเพื่อเริ่มเรียง…':'Tap words to start…'}</div>`;
+    }
+    if(s1Bank.length===0){
+      bankArea.innerHTML = `<div class="hint" style="opacity:.85">${lang==='TH'?'คำหมดแล้ว':'No words left'}</div>`;
+    }
+  }
+
+  function maybeAutoCheck(){
+    if(s1Built.length !== s1CurrentTokens.length) return;
+    if(s1RevealLock) return;
+    // check
+    const builtText = tokensToText(s1Built);
+    const ansText = tokensToText(s1CurrentTokens);
+    if(builtText === ansText){
+      score += 1;
+      scoreEl.textContent = String(score);
+      status1.className = 'status good';
+      status1.textContent = (lang==='TH') ? 'ถูกต้องจ้า ✅' : 'Correct ✅';
+      sparkleChime();
+      const r = builtArea.getBoundingClientRect();
+      burst(r.left + r.width/2, r.top + r.height/2, 60);
+      setTimeout(()=>nextQuestion(), 520);
+    }else{
+      s1WrongCount += 1;
+      status1.className = 'status bad';
+      // If wrong 2 times → reveal answer immediately (no score)
+      if(s1WrongCount >= 2){
+        s1RevealLock = true;
+        sadBuzz();
+        const revealText = ansText;
+        status1.textContent = (lang==='TH') ? `ผิด 2 ครั้งแล้ว! เฉลย: ${revealText}` : `2 wrong tries! Answer: ${revealText}`;
+
+        // show the correct sentence in the built area
+        s1Built = s1CurrentTokens.slice();
+        s1Bank = [];
+        render();
+
+        builtArea.style.pointerEvents = 'none';
+        bankArea.style.pointerEvents = 'none';
+        // Let the player read the solution, then move on by pressing Next
+        document.getElementById('undoBtn').disabled = true;
+        document.getElementById('resetBtn').disabled = true;
+        s1NextBtn.style.display = 'inline-flex';
+        return;
+      }
+
+      status1.textContent = (lang==='TH') ? 'ยังไม่ถูก ลองใหม่อีกครั้ง' : 'Not correct. Try again.';
+      sadBuzz();
+      builtArea.classList.add('shake');
+      setTimeout(()=>builtArea.classList.remove('shake'), 350);
+    }
+  }
+
+  document.getElementById('undoBtn').addEventListener('click', ()=>{
+    if(s1Built.length===0) return;
+    beep(520,0.06,'triangle',0.05);
+    const tok = s1Built.pop();
+    s1Bank.push(tok);
+    render();
+  });
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    beep(300,0.08,'triangle',0.05);
+    s1Built = [];
+    s1Bank = shuffle(s1CurrentTokens);
+    status1.className = 'status';
+    status1.textContent = (lang==='TH') ? 'เริ่มใหม่ได้เลย!' : 'Reset!';
+    render();
+  });
+
+  // Stage 1: Next button shown after 2 wrong tries reveal the answer
+  s1NextBtn.addEventListener('click', ()=>{
+    beep(780,0.06,'triangle',0.06);
+    s1NextBtn.style.display = 'none';
+    nextQuestion();
+  });
+
+  // ---------- Stage 2 logic ----------
+  function clearChoiceState(){
+    [optA,optB].forEach(b=>{ b.classList.remove('correct','wrong'); b.disabled=false; });
+  }
+
+  function loadStage2(){
+    stopTimer();
+    clearChoiceState();
+
+    const q = stage2Pool[qIndex];
+    optAText.textContent = q.A;
+    optBText.textContent = q.B;
+    status2.className = 'status';
+    status2.textContent = t('ready');
+
+    if(mode==='challenge'){
+      secLeft = TIME_PER_Q;
+      secLeftEl.textContent = String(secLeft);
+      setRing(secLeft);
+      startTimer();
+    }
+  }
+
+  function choose(letter){
+    const q = stage2Pool[qIndex];
+    stopTimer();
+    clearChoiceState();
+    optA.disabled = true;
+    optB.disabled = true;
+
+    const correct = (letter === q.correct);
+    if(correct){
+      score += 1;
+      scoreEl.textContent = String(score);
+      status2.className = 'status good';
+      status2.textContent = (lang==='TH') ? 'ถูกต้อง ✅' : 'Correct ✅';
+      sparkleChime();
+      if(letter==='A') optA.classList.add('correct'); else optB.classList.add('correct');
+      const r = (letter==='A'? optA: optB).getBoundingClientRect();
+      burst(r.left + r.width/2, r.top + r.height/2, 70);
+    }else{
+      status2.className = 'status bad';
+      status2.textContent = (lang==='TH') ? 'ผิดจ้า ❌ ไปข้อต่อไป' : 'Wrong ❌ Next';
+      sadBuzz();
+      if(letter==='A') optA.classList.add('wrong'); else optB.classList.add('wrong');
+      if(q.correct==='A') optA.classList.add('correct'); else optB.classList.add('correct');
+    }
+
+    setTimeout(()=>nextQuestion(), 650);
+  }
+
+  optA.addEventListener('click', ()=>choose('A'));
+  optB.addEventListener('click', ()=>choose('B'));
+
+  // ---------- Buttons ----------
+  document.getElementById('homeBtn').addEventListener('click', ()=>{ stopTimer(); show('home'); });
+  document.getElementById('sumHome').addEventListener('click', ()=>{ stopTimer(); show('home'); });
+
+  document.getElementById('replayS1').addEventListener('click', ()=>{
+    stopTimer();
+    stage=1; score=0; scoreS1=0; scoreS2=0; qIndex=0;
+    showOverlay(1);
+  });
+  document.getElementById('replayS2').addEventListener('click', ()=>{
+    stopTimer();
+    stage=2; score=scoreS1; scoreS2=0; qIndex=0;
+    showOverlay(2);
+  });
+  document.getElementById('replayAll').addEventListener('click', ()=>{
+    stopTimer();
+    stage=1; score=0; scoreS1=0; scoreS2=0; qIndex=0;
+    showOverlay(1);
+  });
+
+  // Start
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    playerName = (document.getElementById('player').value || '').trim();
+    if(!playerName) playerName = (lang==='TH') ? 'ผู้เล่น' : 'Player';
+    mode = document.getElementById('modeSel').value;
+
+    // reset scores
+    stage = 1; score=0; scoreS1=0; scoreS2=0; qIndex=0;
+    setHeader();
+    showOverlay(1);
+  });
+
+  // Language buttons
+  document.getElementById('langTH').addEventListener('click', ()=>{ lang='TH'; applyLang(); });
+  document.getElementById('langEN').addEventListener('click', ()=>{ lang='EN'; applyLang(); });
+
+  // Sound toggle
+  const soundBtn = document.getElementById('soundBtn');
+  function updateSoundBtn(){ soundBtn.textContent = soundOn ? 'ON' : 'OFF'; }
+  soundBtn.addEventListener('click', ()=>{ soundOn=!soundOn; updateSoundBtn(); if(soundOn) sparkleChime(); });
+
+  // init
+  applyLang();
+  updateSoundBtn();
+</script>
+</body>
+</html>
